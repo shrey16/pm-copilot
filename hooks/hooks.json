@@ -1,0 +1,27 @@
+{
+  "description": "PM Copilot hooks - product context reminder and implementation REPL loop engine",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/check-product-context.js\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/check-implementation-loop.js\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

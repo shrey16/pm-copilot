@@ -1,0 +1,13 @@
+{
+  "name": "pm-copilot",
+  "version": "0.1.0",
+  "description": "Autonomous product management copilot — feature drilling, spec generation, checkpoint-based implementation, and product health tracking",
+  "author": {
+    "name": "Shrey Gupta",
+    "email": "shrey@example.com"
+  },
+  "homepage": "https://github.com/Shrey16/pm-copilot",
+  "repository": "https://github.com/Shrey16/pm-copilot",
+  "license": "MIT",
+  "keywords": ["product-management", "feature-drilling", "spec-generation", "implementation", "testing"]
+}
