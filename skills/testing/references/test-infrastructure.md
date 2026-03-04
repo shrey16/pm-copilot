@@ -1,6 +1,6 @@
 # Test Infrastructure Guide
 
-How to set up and manage test infrastructure for PM Copilot implementations. Since test infrastructure is project-dependent, this guide provides patterns and questions to ask — not prescriptive solutions.
+How to set up and manage test infrastructure for PM Copilot implementations. Since test infrastructure is project-dependent, this guide provides decision frameworks — not prescriptive code.
 
 ---
 
@@ -21,43 +21,13 @@ These should be answered during the Dependencies category of feature drilling:
    - Are API keys needed for test environments?
    - Should external calls be mocked in tests?
 
-### Patterns for QA Accounts
+### QA Account Patterns
 
-**Pattern A: API-Seeded Accounts**
-```typescript
-// test/helpers/seed-users.ts
-async function seedTestUser(role: string): Promise<TestUser> {
-  const response = await fetch(`${API_URL}/test/seed-user`, {
-    method: 'POST',
-    headers: { 'X-Test-Secret': process.env.TEST_SECRET },
-    body: JSON.stringify({ role, prefix: `test-${Date.now()}` }),
-  });
-  return response.json();
-}
-```
-
-**Pattern B: Database-Seeded Accounts**
-```typescript
-// test/helpers/seed-users.ts
-async function seedTestUser(prisma: PrismaClient, role: string): Promise<User> {
-  return prisma.user.create({
-    data: {
-      email: `test-${Date.now()}@test.local`,
-      role,
-      password: await hash('test-password'),
-    },
-  });
-}
-```
-
-**Pattern C: Fixture Files**
-```json
-// test/fixtures/users.json
-{
-  "admin": { "email": "admin@test.local", "password": "test-pass", "role": "admin" },
-  "user": { "email": "user@test.local", "password": "test-pass", "role": "user" }
-}
-```
+| Pattern | When to Use | Setup |
+|---------|-------------|-------|
+| API-seeded | App has a user creation API | POST to test seed endpoint with X-Test-Secret header |
+| Database-seeded | Direct DB access in tests | Create users via ORM in test setup |
+| Fixture files | Static, unchanging test users | JSON files loaded before tests |
 
 ---
 
@@ -70,132 +40,33 @@ async function seedTestUser(prisma: PrismaClient, role: string): Promise<User> {
 3. **Determinism**: Use fixed seeds for random data, fixed timestamps for dates
 4. **Speed**: Seed only what you need for each test — avoid large fixture sets
 
-### Seeding Strategies
+### Strategy Selection
 
-**Strategy 1: In-Memory Database**
-Best for: Unit and integration tests
-```typescript
-// Use SQLite in-memory for TypeORM tests
-TypeOrmModule.forRoot({
-  type: 'sqlite',
-  database: ':memory:',
-  entities: [/* ... */],
-  synchronize: true,
-})
-```
+| Strategy | Best For | Approach |
+|----------|----------|----------|
+| In-memory DB (SQLite) | Unit and integration tests | Swap DB config to `:memory:` with `synchronize: true` |
+| Test transactions | Integration tests against real DB | Start transaction in beforeEach, rollback in afterEach |
+| API-based seeding | E2E tests | POST to `/api/test/seed` in beforeEach, cleanup in afterEach |
 
-**Strategy 2: Test Transactions**
-Best for: Integration tests against real DB
-```typescript
-beforeEach(async () => {
-  queryRunner = dataSource.createQueryRunner();
-  await queryRunner.startTransaction();
-});
-afterEach(async () => {
-  await queryRunner.rollbackTransaction();
-  await queryRunner.release();
-});
-```
+### Fixture Best Practices
 
-**Strategy 3: API-Based Seeding**
-Best for: E2E tests
-```typescript
-test.beforeEach(async ({ request }) => {
-  await request.post('/api/test/seed', {
-    data: { scenario: 'user-search', entities: 50 },
-  });
-});
-test.afterEach(async ({ request }) => {
-  await request.post('/api/test/cleanup');
-});
-```
+- Prefer factory functions over static JSON — they support overrides and unique IDs
+- Use counter-based IDs for uniqueness across parallel tests
+- Build large dataset helpers for load testing scenarios
 
 ---
 
-## Fixture Management
+## Test Environment
 
-### Factory Functions
+### Required Configuration
 
-Prefer factory functions over static JSON fixtures:
-
-```typescript
-// test/factories/feature.factory.ts
-let counter = 0;
-
-export function buildFeature(overrides?: Partial<Feature>): Feature {
-  counter++;
-  return {
-    id: `test-feature-${counter}`,
-    name: `Feature ${counter}`,
-    description: 'A test feature',
-    status: 'active',
-    createdAt: new Date('2024-01-01T00:00:00Z'),
-    updatedAt: new Date('2024-01-01T00:00:00Z'),
-    ...overrides,
-  };
-}
-```
-
-### Large Dataset Fixtures
-
-For performance or load testing:
-```typescript
-export function buildFeatureList(count: number): Feature[] {
-  return Array.from({ length: count }, (_, i) =>
-    buildFeature({ name: `Feature ${i + 1}` })
-  );
-}
-```
-
----
-
-## Test Environment Configuration
-
-### Environment Variables
-
-```bash
-# .env.test
-DATABASE_URL=postgresql://test:test@localhost:5432/app_test
-API_URL=http://localhost:3001
-TEST_SECRET=test-secret-key
-NODE_ENV=test
-```
-
-### Playwright Configuration
-
-```typescript
-// playwright.config.ts
-import { defineConfig } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './e2e',
-  timeout: 30000,
-  retries: 0,  // No retries — tests must be deterministic
-  use: {
-    baseURL: 'http://localhost:3000',
-    screenshot: 'only-on-failure',
-    trace: 'on-first-retry',
-  },
-  webServer: [
-    {
-      command: 'npm run start:backend:test',
-      port: 3001,
-      reuseExistingServer: true,
-    },
-    {
-      command: 'npm run start:frontend:test',
-      port: 3000,
-      reuseExistingServer: true,
-    },
-  ],
-});
-```
+- `.env.test` with: DATABASE_URL (test DB), API_URL, TEST_SECRET, NODE_ENV=test
+- Playwright config: baseURL pointing to test server, `retries: 0` (tests must be deterministic), screenshots on failure
+- WebServer config to auto-start backend + frontend before E2E runs
 
 ---
 
 ## Checklist for New Features
-
-When implementing a new feature's test infrastructure:
 
 - [ ] QA accounts: Can test accounts be created for all required roles?
 - [ ] Test data: Is there a seeding strategy for the feature's data requirements?

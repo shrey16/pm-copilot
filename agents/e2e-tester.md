@@ -25,6 +25,13 @@ You receive:
 
 ## Process
 
+### Step 0: Read Architecture Context
+
+1. **Read** `.claude/architecture.md` to determine:
+   - Application URLs and ports
+   - Frontend framework (affects how pages are structured)
+   - Startup commands (for knowing how to run the app)
+
 ### Step 1: Understand the User Flows
 
 1. **Read** the spec's Section 2 (User Flows) — primary flow, alternative flows, entry/exit points
@@ -118,14 +125,6 @@ If the application isn't running, note it in the report — don't try to start i
 ### Files Created
 - {path}: {description}
 ```
-
-## Selector Strategy (Priority Order)
-
-1. `data-testid` attributes (most stable)
-2. ARIA roles and labels: `getByRole('button', { name: 'Submit' })`
-3. Visible text: `getByText('Create Feature')`
-4. Placeholder text: `getByPlaceholder('Search...')`
-5. CSS selectors (last resort — fragile)
 
 ## Rules
 

@@ -25,14 +25,21 @@ You receive:
 
 ## Process
 
+### Step 0: Read Architecture Context
+
+1. **Read** `.claude/architecture.md` to determine:
+   - Backend framework and test runner
+   - Frontend framework and test runner
+   - Project structure and naming conventions
+
 ### Step 1: Understand What Was Implemented
 
 1. **Read** all files created by the implementer for this unit
 2. **Read** the spec sections relevant to this unit (FRs, edge cases, API contracts, data model)
 3. **Identify** the test framework in use:
-   - Backend: Jest (NestJS default) — look for `jest.config` or `package.json` jest config
-   - Frontend: Vitest or Jest — look for `vitest.config` or jest config
-4. **Check** existing test patterns: `**/*.spec.ts`, `**/*.test.ts`, `**/*.test.tsx`
+   - Check architecture context for test framework
+   - Look for test config files: `jest.config.*`, `vitest.config.*`, `pytest.ini`, `conftest.py`, etc.
+4. **Check** existing test patterns: `**/*.spec.ts`, `**/*.test.ts`, `**/*.test.tsx`, `**/test_*.py`, etc.
 
 ### Step 2: Plan Tests
 
@@ -47,32 +54,32 @@ Map spec requirements to test cases:
 
 ### Step 3: Write Backend Tests
 
-For each NestJS service/controller created:
+For each backend service/controller/handler created (adapt patterns to the project's framework):
 
-**Service tests** (`{name}.service.spec.ts`):
-- Mock the repository/ORM
+**Service tests** (`{name}.service.spec.ts` or framework equivalent):
+- Mock the repository/ORM/data layer
 - Test each method with valid inputs → expected output
 - Test each method with invalid inputs → expected exceptions
 - Test edge cases from the spec
 
-**Controller tests** (`{name}.controller.spec.ts`):
+**Controller/Handler tests** (`{name}.controller.spec.ts` or framework equivalent):
 - Mock the service
 - Test each endpoint returns correct HTTP status
-- Test request validation (DTO validation via class-validator)
+- Test request validation (input validation matching the framework's approach)
 - Test error responses match spec's error response table
 
 ### Step 4: Write Frontend Tests
 
-For each React component/hook created:
+For each frontend component/hook/composable created (adapt patterns to the project's framework):
 
-**Component tests** (`{name}.test.tsx`):
+**Component tests** (`{name}.test.tsx` or framework equivalent):
 - Test rendering with mock data
 - Test user interactions (click, type, submit)
 - Test loading state rendering
 - Test error state rendering
 - Test empty state rendering
 
-**Hook tests** (`{name}.test.ts`):
+**Hook/Composable tests** (`{name}.test.ts` or framework equivalent):
 - Test data fetching with mocked API
 - Test mutations with mocked API
 - Test error handling

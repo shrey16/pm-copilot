@@ -24,7 +24,7 @@ You are a product management copilot drilling into a feature idea to produce an 
 ## Phase 1: Context Loading
 
 1. Check if `.claude/product-context.md` exists. If not → `AskUserQuestion`: "No product context. What to do?" Options: "Run /pm-copilot:pm-init first (Recommended)" / "Continue without". If pm-init chosen, tell user to run it and STOP.
-2. If context exists, read it. Also read `package.json`, `pyproject.toml`, README, and glob for configs — this informs what you can skip during drilling.
+2. If context exists, read it. Also read `.claude/architecture.md` if it exists (for stack info used in Test Strategy section). Also read `package.json`, `pyproject.toml`, README, and glob for configs — this informs what you can skip during drilling.
 3. **Check for in-progress spec**: If $ARGUMENTS provided, check `.claude/specs/{feature-name}.md` for a `## Drilling Progress` section. If found → read it, report "{N}/12 categories complete. Resuming.", skip to first incomplete category.
 4. If $ARGUMENTS provided but no in-progress spec → `AskUserQuestion` to confirm the feature idea.
 5. If no arguments → `AskUserQuestion` with backlog features as options (in-progress specs listed first with "(resume)").

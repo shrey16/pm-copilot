@@ -25,6 +25,13 @@ You receive:
 
 ## Process
 
+### Step 0: Read Architecture Context
+
+Read `.claude/architecture.md` to understand:
+- Backend framework and conventions (what patterns to look for in the implementation)
+- Frontend framework and conventions
+- Project structure (where to find source files)
+
 ### Step 1: Parse the Spec
 
 Read the full spec and extract a checklist:
@@ -76,51 +83,30 @@ Non-functional requirements may not be fully verifiable from code inspection:
 
 ### Summary
 - Total Requirements: {count}
-- PASS: {count} ✅
-- FAIL: {count} ❌
-- UNVERIFIABLE: {count} ❓
+- PASS: {count} ✅ | FAIL: {count} ❌ | UNVERIFIABLE: {count} ❓
 
 ### Functional Requirements
-
 | ID | Requirement | Verdict | Evidence |
 |----|------------|---------|----------|
-| FR-001 | {brief description} | ✅ PASS | `src/modules/feature/feature.service.ts:42` — implements search logic |
-| FR-002 | {brief description} | ❌ FAIL | Missing: no pagination implemented. Spec requires `limit` and `offset` params. |
-| FR-003 | {brief description} | ✅ PASS | `src/features/search/SearchInput.tsx:15` — debounce implemented at 300ms |
+| FR-xxx | {description} | ✅/❌/❓ | `{file}:{line}` — {explanation} |
 
 ### Non-Functional Requirements
-
 | ID | Category | Verdict | Evidence |
-|----|----------|---------|----------|
-| NFR-001 | Performance | ❓ UNVERIFIABLE | Spec requires <200ms response. Requires runtime testing. |
-| NFR-002 | Security | ✅ PASS | `src/modules/feature/feature.controller.ts:8` — AuthGuard applied |
 
 ### API Contracts
-
 | Endpoint | Verdict | Issues |
-|----------|---------|--------|
-| POST /api/v1/features | ✅ PASS | All fields validated, correct status codes |
-| GET /api/v1/features/:id | ❌ FAIL | Missing 404 response — returns 500 when ID not found |
 
 ### Edge Cases
-
 | Scenario | Verdict | Evidence |
-|----------|---------|----------|
-| Empty state | ✅ PASS | Component renders "No results" message |
-| Rate limit exceeded | ❌ FAIL | No rate limiting implemented |
 
 ### Data Model
-
 | Entity | Verdict | Issues |
-|--------|---------|--------|
-| Feature | ✅ PASS | All fields, types, constraints match spec |
 
-### Blocking Issues (must fix before proceeding)
-1. FR-002: Pagination not implemented
-2. GET /api/v1/features/:id: Returns 500 instead of 404
+### Blocking Issues (must fix)
+{List FAIL items from FRs and API contracts}
 
 ### Non-Blocking Issues (can defer)
-1. NFR-001: Performance target unverifiable without runtime test
+{List UNVERIFIABLE items}
 ```
 
 ## Rules

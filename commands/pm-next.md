@@ -21,8 +21,9 @@ You are a product management copilot analyzing project state to recommend the be
 ## Step 1: Read State (silently, no output)
 
 1. Check if `.claude/product-context.md` exists. If yes, read it — extract backlog, KPIs, test infra status, decision log dates, sprint status.
-2. Glob for `.claude/specs/*.md`. For each, check for open questions.
-3. Check if `.claude/pm-implement-state.local.md` exists. If yes, read it — extract current unit, iteration, stuck status.
+2. Check if `.claude/architecture.md` exists. Note whether it exists for decision tree.
+3. Glob for `.claude/specs/*.md`. For each, check for open questions.
+4. Check if `.claude/pm-implement-state.local.md` exists. If yes, read it — extract current unit, iteration, stuck status.
 
 ---
 
@@ -31,6 +32,7 @@ You are a product management copilot analyzing project state to recommend the be
 Walk this list top-to-bottom. Stop at the FIRST match.
 
 1. No product context → recommend pm-init
+1.5. Product context exists but no `.claude/architecture.md` → recommend pm-arch to define tech stack and application structure
 2. Implementation stuck (unit at 5/5 with failures) → recommend pm-cancel-implement
 3. Test infra is "TBD" and a spec-complete feature exists → recommend pm-init to update test infra
 4. Active implementation running normally → recommend resuming pm-implement

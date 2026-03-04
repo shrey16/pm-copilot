@@ -18,12 +18,13 @@ version: 0.1.0
 | Source | File | What to extract |
 |--------|------|-----------------|
 | Product Context | `.claude/product-context.md` | Backlog (priority, status, confidence), KPIs (status), test infra (TBD?), decision log (staleness), sprint |
+| Architecture Context | `.claude/architecture.md` | Whether it exists (missing = recommend pm-arch), stack decisions |
 | Feature Specs | `.claude/specs/*.md` | Open questions, drilling progress |
 | Implementation | `.claude/pm-implement-state.local.md` | Current unit, iteration, stuck status, test results |
 
 ## Priority Levels
 
-- **P0 Blockers**: No product context, stuck implementation, TBD test infra with spec-complete features
+- **P0 Blockers**: No product context, no architecture context, stuck implementation, TBD test infra with spec-complete features
 - **P1 In-Progress**: Active implementation running, specs with open questions
 - **P2 Pipeline**: Features ready to implement or drill (P0 features first, then P1)
 - **P3 Health**: At-risk KPIs, no sprint, low confidence features, stale decisions

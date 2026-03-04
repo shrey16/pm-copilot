@@ -9,5 +9,5 @@
   "homepage": "https://github.com/Shrey16/pm-copilot",
   "repository": "https://github.com/Shrey16/pm-copilot",
   "license": "MIT",
-  "keywords": ["product-management", "feature-drilling", "spec-generation", "implementation", "testing"]
+  "keywords": ["product-management", "feature-drilling", "spec-generation", "architecture", "implementation", "testing"]
 }

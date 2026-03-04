@@ -25,11 +25,9 @@ You are the **orchestrator** of a checkpoint-based build. You read state, dispat
 
 1. Read spec at `.claude/specs/{spec-name}.md`. If not found, glob for specs and `AskUserQuestion` to pick.
 2. Read `.claude/product-context.md` for context.
-3. **Detect project** using `Glob` and `Grep`:
-   - Backend: `nest-cli.json`, NestJS patterns
-   - Frontend: `vite.config.*`, React patterns
-   - ORM, state management, test framework, API layer
-   - If missing backend/frontend → `AskUserQuestion` to scaffold or skip.
+3. **Read architecture context**: Read `.claude/architecture.md` for stack decisions, project structure, and scaffolding commands. If architecture.md does not exist → `AskUserQuestion`: "No architecture context found. Run `/pm-copilot:pm-arch` first to define your tech stack and application structure." Offer: "Run pm-arch (Recommended)" / "Continue without architecture context".
+   If continuing without: detect project using `Glob` and `Grep` — scan for framework configs, ORM, state management, test framework, API layer.
+   If missing backend/frontend → `AskUserQuestion` to scaffold using commands from architecture.md, or skip.
 4. Create state file `.claude/pm-implement-state.local.md`.
 
 ---
@@ -171,7 +169,7 @@ Show what failed and why, then `AskUserQuestion`:
 ## Phase 3: Integration (autonomous)
 
 After all checkpoints:
-1. Run full test suite via `Agent`: `npm test` + `npx vitest run` + `npx playwright test`
+1. Run full test suite via `Agent` using the test commands appropriate for the project's stack (from architecture context or detected config)
 2. Use `Agent` (spec-verifier) on entire spec.
 3. Fix integration issues (max 5 iterations, via subagents).
 4. Update state file.

@@ -11,21 +11,23 @@ Methodology for writing and running tests that verify implementation against spe
 
 ## Testing Layers
 
-### Layer 1: Unit Tests (Jest / Vitest)
+Read `.claude/architecture.md` to determine the backend framework, frontend framework, and test runner. Adapt the patterns below to the project's stack.
 
-**Backend (NestJS)**:
-- Test services in isolation with mocked repositories
-- Test DTOs with class-validator (valid + invalid inputs)
-- Test controllers with mocked services (HTTP status codes, response shapes)
-- Test guards and interceptors in isolation
+### Layer 1: Unit Tests
 
-**Frontend (React)**:
-- Test components with React Testing Library (render, user interactions, assertions)
-- Test hooks with `renderHook` (state changes, side effects)
-- Test API layer with mocked fetch/axios
+**Backend** (adapt to the project's backend framework and test runner):
+- Test services in isolation with mocked repositories/data layer
+- Test input validation (DTOs, schemas, or framework equivalent)
+- Test controllers/handlers with mocked services (HTTP status codes, response shapes)
+- Test middleware, guards, and interceptors in isolation
+
+**Frontend** (adapt to the project's frontend framework and test runner):
+- Test components with the framework's testing library (render, user interactions, assertions)
+- Test hooks/composables (state changes, side effects)
+- Test API layer with mocked HTTP calls
 - Test utility functions as pure unit tests
 
-**Naming convention**: `{source-file}.spec.ts` co-located with source
+**Naming convention**: `{source-file}.spec.ts` or `{source-file}.test.ts` co-located with source
 
 ### Layer 2: Integration Tests
 
@@ -75,37 +77,9 @@ See `references/test-infrastructure.md` for detailed guidance.
 
 ## E2E Testing with Playwright
 
-### Structure
-```typescript
-import { test, expect } from '@playwright/test';
-
-test.describe('Feature: {spec feature name}', () => {
-  test.beforeEach(async ({ page }) => {
-    // Set up test data via API or seeding
-    // Navigate to starting point
-  });
-
-  test('primary flow: {description from spec}', async ({ page }) => {
-    // Follow spec Section 2.1 step by step
-    await page.goto('/features');
-    await page.click('button:has-text("Create")');
-    await page.fill('[name="name"]', 'Test Feature');
-    await page.click('button:has-text("Submit")');
-    await expect(page.locator('.success-message')).toBeVisible();
-  });
-
-  test('edge case: {scenario from spec Section 7}', async ({ page }) => {
-    // Test specific edge case
-  });
-});
-```
-
-### Playwright Best Practices
-- Use `data-testid` attributes for reliable selectors
-- Prefer user-visible text selectors when stable
-- Use `page.waitForResponse()` when testing async operations
-- Set reasonable timeouts (default 30s for navigation, 5s for assertions)
-- Take screenshots on failure for debugging
+- Test complete user flows end-to-end following the spec's Section 2
+- One test per flow. Use `data-testid` and visible text selectors.
+- See the `e2e-tester` agent for detailed Playwright patterns and examples.
 
 ## Mapping Spec to Tests
 

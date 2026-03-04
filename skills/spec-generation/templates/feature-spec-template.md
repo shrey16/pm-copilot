@@ -179,8 +179,8 @@
 ## 14. Test Strategy
 
 ### Unit Test Approach
-- **Backend**: {NestJS service/controller tests — what to mock, key assertions}
-- **Frontend**: {React component/hook tests — what to render, key interactions to test}
+- **Backend**: {Describe unit test approach for the project's backend framework and test runner — what to mock, key assertions}
+- **Frontend**: {Describe unit test approach for the project's frontend framework and test runner — what to render, key interactions to test}
 
 ### E2E Flows to Test
 | # | Flow | Steps | Expected Outcome |
