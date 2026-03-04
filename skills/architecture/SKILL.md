@@ -1,3 +1,9 @@
+---
+name: architecture
+description: This skill should be used when defining application architecture, choosing a tech stack, deciding on project structure, or when the user says "define architecture", "choose tech stack", "what stack", "project structure", "app type", "set up the project"
+version: 0.2.0
+---
+
 # Architecture Skill
 
 Methodology for defining application architecture, tech stack, and holistic application structure before implementation begins.
